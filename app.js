@@ -1,5 +1,8 @@
 let boxes = document.querySelectorAll(".box");
 let resetBtn = document.querySelector(".reset");
+let newGameBtn = document.querySelector(".newGame");
+let msgContainer = document.querySelector(".msg-container");
+let msg = document.querySelector("#msg");
 
 let turnO = true;
 
@@ -31,6 +34,11 @@ boxes.forEach((box) => {
   });
 });
 
+const showWinner = (winner) => {
+  msg.innerText = `Congratulations ${winner} is the winner!`;
+  msgContainer.classList.remove("hide");
+};
+
 const checkWinner = () => {
   for (pattern of winPatterns) {
     let pos1 = boxes[pattern[0]].innerText;
@@ -43,6 +51,7 @@ const checkWinner = () => {
         boxes[pattern[0]].style.backgroundColor = "green";
         boxes[pattern[1]].style.backgroundColor = "green";
         boxes[pattern[2]].style.backgroundColor = "green";
+        showWinner(pos1);
       }
     }
   }
