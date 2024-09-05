@@ -1,10 +1,18 @@
 let boxes = document.querySelectorAll(".box");
-let resetBtn = document.querySelector(".reset");
-let newGameBtn = document.querySelector(".newGame");
+let resetBtn = document.querySelector(".reset-btn");
+let newGameBtn = document.querySelector(".new-btn");
 let msgContainer = document.querySelector(".msg-container");
 let msg = document.querySelector("#msg");
 
 let turnO = true;
+let count = 0;
+
+const resetGame = () => {
+  turnO = true;
+  count = 0;
+  enableBoxes();
+  msgContainer.classList.add("hide");
+};
 
 const winPatterns = [
   [0, 1, 2],
@@ -19,7 +27,6 @@ const winPatterns = [
 
 boxes.forEach((box) => {
   box.addEventListener("click", () => {
-    console.log("box was clicked");
     if (turnO) {
       box.innerHTML = "O";
       turnO = false;
@@ -29,14 +36,39 @@ boxes.forEach((box) => {
     }
 
     box.disabled = true;
+    count++;
 
-    checkWinner();
+    let isWinner = checkWinner();
+
+    if (count == 9 && !isWinner) {
+      gameDraw();
+    }
   });
 });
+
+const gameDraw = () => {
+  msg.innerText = `Game was a Draw.`;
+  msgContainer.classList.remove("hide");
+  disableBoxes();
+};
+
+const disableBoxes = () => {
+  for (let box of boxes) {
+    box.disabled = true;
+  }
+};
+
+const enableBoxes = () => {
+  for (let box of boxes) {
+    box.disabled = false;
+    box.innerText = "";
+  }
+};
 
 const showWinner = (winner) => {
   msg.innerText = `Congratulations ${winner} is the winner!`;
   msgContainer.classList.remove("hide");
+  disableBoxes();
 };
 
 const checkWinner = () => {
@@ -47,12 +79,11 @@ const checkWinner = () => {
 
     if (pos1 != "" && pos2 != "" && pos3 != "") {
       if (pos1 == pos2 && pos2 == pos3) {
-        console.log("winner", pos1);
-        boxes[pattern[0]].style.backgroundColor = "green";
-        boxes[pattern[1]].style.backgroundColor = "green";
-        boxes[pattern[2]].style.backgroundColor = "green";
         showWinner(pos1);
       }
     }
   }
 };
+
+newGameBtn.addEventListener("click", resetGame);
+resetBtn.addEventListener("click", resetGame);
